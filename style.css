@@ -13,7 +13,7 @@ body {
   position: relative;
 }
 
-/* === 升级版动态星空：多层 + 轻微横向漂移 + 不同闪烁速度 === */
+/* === 动态星空：多层 + 轻微漂移 + 不同闪烁速度 === */
 .stars,
 .stars2,
 .stars3,
@@ -53,7 +53,7 @@ body {
   opacity: 0.5;
 }
 
-.stars4 {  /* 超小星星，增加层次感 */
+.stars4 {
   background-image: 
     radial-gradient(0.8px 0.8px at 30px 200px, #fff, rgba(0,0,0,0)),
     radial-gradient(0.9px 0.9px at 90px 10px, #eee, rgba(0,0,0,0));
@@ -72,46 +72,55 @@ body {
   to   { transform: translateX(100px); }
 }
 
-/* === 飘落爱心粒子（纯CSS，浪漫升级） === */
+/* === 飘落爱心粒子（优化版：更明显、更快出现） === */
 .hearts-container {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 5;
-  overflow: hidden;
+  z-index: 15;                /* 提高层级，确保在文字之上 */
+  overflow: visible;
 }
 
 .heart-particle {
   position: absolute;
-  top: -10%;
-  font-size: 2rem;
-  animation: fall linear infinite, sway 4s ease-in-out infinite alternate;
+  top: -20vh;
+  left: var(--left, 10%);
+  font-size: calc(1.8rem + var(--size, 0rem));
+  opacity: 0;
+  color: hsl(var(--hue, 330), 90%, 65%);
+  transform: translateX(-50%) rotate(var(--rot, 0deg));
+  animation: 
+    fall 7s linear infinite,
+    sway 2.8s ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
   will-change: transform, opacity;
 }
 
-/* 给每个爱心随机位置、延迟、速度、摇摆 */
-.heart-particle:nth-child(1) { left: 10%; animation-duration: 12s, 3s; animation-delay: 0s, 0s; }
-.heart-particle:nth-child(2) { left: 25%; animation-duration: 15s, 4s; animation-delay: 2s, 1s; }
-.heart-particle:nth-child(3) { left: 40%; animation-duration: 10s, 2.5s; animation-delay: 4s, 0.5s; }
-.heart-particle:nth-child(4) { left: 55%; animation-duration: 18s, 3.5s; animation-delay: 1s, 2s; }
-.heart-particle:nth-child(5) { left: 70%; animation-duration: 14s, 4s; animation-delay: 3s, 1.5s; }
-.heart-particle:nth-child(6) { left: 85%; animation-duration: 16s, 3s; animation-delay: 5s, 0s; }
-
-/* 如果你加了很多爱心，可以继续 nth-child(7) ... 改 left 和 delay */
+/* 每个爱心的随机属性 */
+.heart-particle:nth-child(1)  { --left: 8%;   --delay: 0s;    --size: 0.8rem; --hue: 330; --rot: -12deg; }
+.heart-particle:nth-child(2)  { --left: 18%;  --delay: 0.8s;  --size: 1.3rem; --hue: 340; --rot: 15deg; }
+.heart-particle:nth-child(3)  { --left: 28%;  --delay: 1.6s;  --size: 0.6rem; --hue: 320; --rot: -8deg; }
+.heart-particle:nth-child(4)  { --left: 38%;  --delay: 2.4s;  --size: 1.1rem; --hue: 350; --rot: 18deg; }
+.heart-particle:nth-child(5)  { --left: 48%;  --delay: 3.2s;  --size: 0.9rem; --hue: 300; --rot: -10deg; }
+.heart-particle:nth-child(6)  { --left: 58%;  --delay: 0.4s;  --size: 1.5rem; --hue: 335; --rot: 12deg; }
+.heart-particle:nth-child(7)  { --left: 68%;  --delay: 2s;    --size: 0.7rem; --hue: 345; --rot: -15deg; }
+.heart-particle:nth-child(8)  { --left: 78%;  --delay: 1.2s;  --size: 1.2rem; --hue: 325; --rot: 10deg; }
+.heart-particle:nth-child(9)  { --left: 88%;  --delay: 2.8s;  --size: 0.5rem; --hue: 355; --rot: -20deg; }
+.heart-particle:nth-child(10) { --left: 95%;  --delay: 3.6s;  --size: 1.4rem; --hue: 310; --rot: 8deg; }
 
 @keyframes fall {
-  0%   { transform: translateY(-10vh); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translateY(110vh); opacity: 0; }
+  0%   { transform: translateY(-20vh) translateX(-50%) rotate(var(--rot, 0deg)); opacity: 0; }
+  10%  { opacity: 0.95; }
+  90%  { opacity: 0.95; }
+  100% { transform: translateY(120vh) translateX(-50%) rotate(calc(var(--rot, 0deg) + 360deg)); opacity: 0; }
 }
 
 @keyframes sway {
-  from { transform: translateX(-15px) rotate(-10deg); }
-  to   { transform: translateX(15px)  rotate(10deg); }
+  from { transform: translateX(-25px) rotate(calc(var(--rot, 0deg) - 20deg)); }
+  to   { transform: translateX(25px)  rotate(calc(var(--rot, 0deg) + 20deg)); }
 }
 
-/* 原有内容区域（稍作调整，z-index 更高） */
+/* 内容区域 */
 .container {
   position: relative;
   z-index: 20;
@@ -162,7 +171,27 @@ h2 {
   text-shadow: 0 0 15px #ffb6c1;
 }
 
-/* 增强心跳 + 颜色渐变脉动 */
+.small-hearts {
+  margin-top: 20px;
+  font-size: 3rem;
+}
+
+.small-hearts span {
+  margin: 0 12px;
+  animation: float 7s infinite ease-in-out;
+}
+
+.small-hearts span:nth-child(2) { animation-delay: 1.2s; }
+.small-hearts span:nth-child(3) { animation-delay: 2.4s; }
+.small-hearts span:nth-child(4) { animation-delay: 3.6s; }
+.small-hearts span:nth-child(5) { animation-delay: 4.8s; }
+
+/* 动画 */
+@keyframes glow {
+  from { text-shadow: 0 0 15px #ff85c0; }
+  to   { text-shadow: 0 0 40px #ff1493, 0 0 70px #c71585; }
+}
+
 @keyframes heartbeat {
   0%, 40%, 100% { transform: scale(1); }
   20%           { transform: scale(1.35); }
@@ -173,29 +202,12 @@ h2 {
   50%      { filter: hue-rotate(30deg); }
 }
 
-@keyframes glow {
-  from { text-shadow: 0 0 15px #ff85c0; }
-  to   { text-shadow: 0 0 40px #ff1493, 0 0 70px #c71585; }
-}
-
-/* 小爱心飘浮（原有） */
-.small-hearts span {
-  margin: 0 12px;
-  font-size: 3rem;
-  animation: float 7s infinite ease-in-out;
-}
-
-.small-hearts span:nth-child(2) { animation-delay: 1.2s; }
-.small-hearts span:nth-child(3) { animation-delay: 2.4s; }
-.small-hearts span:nth-child(4) { animation-delay: 3.6s; }
-.small-hearts span:nth-child(5) { animation-delay: 4.8s; }
-
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50%      { transform: translateY(-30px) rotate(15deg); }
 }
 
-/* 响应式 */
+/* 手机适配 */
 @media (max-width: 768px) {
   h1 { font-size: 4.5rem; }
   h2 { font-size: 3.2rem; }
